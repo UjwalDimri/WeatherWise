@@ -8,7 +8,7 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 
 | Student | SAP ID | Role |
 |---|---|---|
-| Ujwal Dimri | 590022777 | Full-Stack Developer, DevSecOps |
+| Ujwal Dimri | 590022777 | Full-Stack Developer, DevSecOps |Team Lead (Project Manager)
 | Rahul Singh Garbyal | 590022432 | API Integration & DevOps |
 
 ## Features
