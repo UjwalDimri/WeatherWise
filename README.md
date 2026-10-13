@@ -10,6 +10,7 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 |---|---|---|
 | Ujwal Dimri | 590022777 | Full-Stack Developer, DevSecOps |
 | Rahul Singh Garbyal | 590022432 | API Integration & DevOps |
+## Team Lead (Project Manager) --UJWAL DIMRI
 
 ## Features
 
