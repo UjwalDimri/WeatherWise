@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WeatherWise gives you simple, readable weather updates and forecasts.">
+  <title>WeatherWise | Understand Your Weather</title>
+
+  <link rel="stylesheet" href="/css/home.css">
+  <script src="/js/home.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="/" class="logo">
+      <span class="logo-icon">☀</span>
+      Weather<span>Wise</span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="/" class="active">Home</a>
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <a href="#weather-search" class="nav-button">Check Weather ↗</a>
+
+    <button class="menu-toggle" id="menuToggle"
+      aria-label="Toggle navigation" aria-expanded="false">
+      ☰
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          WEATHER MADE SIMPLE
+        </div>
+
+        <h1>Understand the sky.<br>
+          <span>Plan your day.</span>
+        </h1>
+
+        <p class="hero-description">
+          Weather information shouldn't be complicated.
+          Get the important updates you need, explained in a
+          simple and readable way.
+        </p>
+
+        <form class="search-form" id="weather-search" action="/weather" method="GET">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            type="text"
+            id="cityInput"
+            name="city"
+            placeholder="Enter a city, e.g. Dehradun"
+            aria-label="Enter city name"
+            autocomplete="off"
+            required
+          >
+          <button type="submit" id="searchButton">Check Weather →</button>
+        </form>
+
+        <p class="search-hint" id="searchHint">
+          Try searching for your city to get started.
+        </p>
+
+        <div class="hero-points">
+          <span>✓ Easy to understand</span>
+          <span>✓ Important weather data</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="Weather illustration">
+        <div class="visual-glow"></div>
+        <div class="weather-orbit orbit-one"></div>
+        <div class="weather-orbit orbit-two"></div>
+
+        <div class="sun">☀</div>
+        <div class="cloud cloud-one">☁</div>
+        <div class="cloud cloud-two">☁</div>
+
+        <div class="weather-preview">
+          <div class="preview-top">
+            <div>
+              <span class="preview-label">YOUR WEATHER</span>
+              <h3>Weather at a glance</h3>
+            </div>
+            <span class="live-indicator">● Preview</span>
+          </div>
+
+          <div class="preview-middle">
+            <div>
+              <p class="preview-temperature">24°</p>
+              <p class="preview-condition">Partly cloudy</p>
+            </div>
+            <div class="preview-icon">🌤️</div>
+          </div>
+
+          <div class="preview-details">
+            <div>
+              <span>💧</span>
+              <p>Humidity</p>
+              <strong>65%</strong>
+            </div>
+            <div>
+              <span>🌬️</span>
+              <p>Wind</p>
+              <strong>12 km/h</strong>
+            </div>
+            <div>
+              <span>🌧️</span>
+              <p>Rain chance</p>
+              <strong>20%</strong>
+            </div>
+          </div>
+
+          <p class="preview-note">
+            Illustrative sample data — not live weather.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features section" id="features">
+      <div class="section-heading">
+        <span class="eyebrow">WHAT YOU GET</span>
+        <h2>Everything important.<br><span>Nothing complicated.</span></h2>
+        <p>Quickly understand the conditions outside without digging through confusing data.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon temperature">🌡️</div>
+          <h3>Temperature</h3>
+          <p>Understand how hot or cold it is, with temperatures in Celsius.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon humidity">💧</div>
+          <h3>Humidity</h3>
+          <p>See how much moisture is in the air and what it means for your day.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon wind">🌬️</div>
+          <h3>Wind & Rain</h3>
+          <p>Check wind speed and rainfall information to plan outdoor activities.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon forecast">📅</div>
+          <h3>Weather Forecast</h3>
+          <p>Get a clearer picture of expected conditions and upcoming changes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="about-icon">🌦️</div>
+      <div>
+        <span class="eyebrow">ABOUT WEATHERWISE</span>
+        <h2>Weather information for everyone.</h2>
+        <p>
+          WeatherWise aims to make essential weather data accessible,
+          clear and useful. Our goal is to help people understand current
+          conditions and make more informed everyday plans.
+        </p>
+      </div>
+      <a href="#weather-search" class="about-button">Explore Weather →</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="/" class="logo">
+      <span class="logo-icon">☀</span>
+      Weather<span>Wise</span>
+    </a>
+    <p>Clear skies start with clear information.</p>
+    <span class="copyright">© <span id="currentYear"></span> WeatherWise</span>
+  </footer>
+
+</body>
+</html>
