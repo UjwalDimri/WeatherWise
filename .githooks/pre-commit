@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# pre-commit: fast checks on STAGED files only
+set -u
+FAIL=0
+fail() { echo "✖ $1"; FAIL=1; }
+ok()   { echo "✔ $1"; }
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$STAGED" ] && exit 0
+
+# 1. Never commit node_modules or .env files
+if echo "$STAGED" | grep -qE '(^|/)node_modules/'; then
+  fail "node_modules/ is staged. Add it to .gitignore and run: git rm -r --cached node_modules"
+fi
+if echo "$STAGED" | grep -qE '(^|/)\.env($|\.)' && ! echo "$STAGED" | grep -qE '\.env\.example$'; then
+  fail ".env file is staged (it holds secrets). Unstage it: git reset HEAD <file>"
+fi
+
+# 2. Secret / API-key scan (weather apps usually have an API key!)
+SECRET_RE='(api[_-]?key|apikey|secret|token|passwd|password)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9_\-]{16,}'
+for f in $(echo "$STAGED" | grep -E '\.(js|jsx|ts|tsx|json|html|py|yml|yaml)$' | grep -vE 'package-lock\.json|\.example'); do
+  if git show ":$f" | grep -qiE "$SECRET_RE"; then
+    fail "Possible hard-coded secret in $f (move it to .env and read via process.env)"
+  fi
+done
+
+# 3. Large files (> 1 MB)
+for f in $STAGED; do
+  SIZE=$(git cat-file -s ":$f" 2>/dev/null || echo 0)
+  [ "$SIZE" -gt 1048576 ] && fail "$f is larger than 1 MB"
+done
+
+# 4. Leftover debug / merge-conflict markers
+JS=$(echo "$STAGED" | grep -E '\.(js|jsx|ts|tsx)$')
+for f in $STAGED; do
+  if git show ":$f" | grep -qE '^(<<<<<<<|>>>>>>>)'; then fail "Merge conflict marker in $f"; fi
+done
+for f in $JS; do
+  if git show ":$f" | grep -qE '\b(debugger)\b'; then fail "'debugger' statement in $f"; fi
+  # console.log is only a warning
+  if git show ":$f" | grep -qE 'console\.log'; then echo "⚠ console.log found in $f (warning only)"; fi
+done
+
+# 5. JavaScript syntax check
+if command -v node >/dev/null 2>&1; then
+  for f in $(echo "$JS" | grep -E '\.js$'); do
+    git show ":$f" > /tmp/_hookcheck.js
+    node --check /tmp/_hookcheck.js 2>/tmp/_hookerr || { fail "Syntax error in $f"; cat /tmp/_hookerr; }
+  done
+fi
+
+# 6. JSON validity
+for f in $(echo "$STAGED" | grep -E '\.json$'); do
+  git show ":$f" | node -e 'JSON.parse(require("fs").readFileSync(0,"utf8"))' 2>/dev/null || fail "Invalid JSON: $f"
+done
+
+# 7. Lint + tests (only if the project defines them)
+if [ -f package.json ] && command -v npm >/dev/null 2>&1; then
+  if grep -q '"lint"' package.json; then
+    npm run lint --silent && ok "lint passed" || fail "lint failed"
+  fi
+  if grep -q '"test"' package.json && ! grep -q 'no test specified' package.json; then
+    npm test --silent && ok "tests passed" || fail "tests failed"
+  fi
+fi
+
+[ $FAIL -eq 0 ] && ok "pre-commit checks passed" || { echo; echo "Commit blocked. Fix the issues above (or bypass once with: git commit --no-verify)"; exit 1; }
