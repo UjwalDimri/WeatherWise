@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# pre-push: heavier checks before code leaves your machine
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+  echo "✖ Direct push to '$BRANCH' is blocked. Use a feature branch + pull/merge request."
+  exit 1
+fi
+
+if [ -f package.json ] && grep -q '"test"' package.json && ! grep -q 'no test specified' package.json; then
+  echo "Running full test suite before push..."
+  npm test --silent || { echo "✖ Tests failed. Push blocked."; exit 1; }
+fi
+
+if [ -f package.json ] && grep -q '"build"' package.json; then
+  echo "Checking that the build works..."
+  npm run build --silent || { echo "✖ Build failed. Push blocked."; exit 1; }
+fi
+echo "✔ pre-push checks passed"

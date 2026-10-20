@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# prepare-commit-msg: prefill the message with the ticket/branch prefix, e.g. branch feat/forecast -> "feat: "
+MSG_FILE="$1"; SOURCE="${2:-}"
+[ -n "$SOURCE" ] && exit 0   # skip for -m, merges, amends
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+TYPE=$(echo "$BRANCH" | sed -nE 's#^(feat|fix|docs|refactor|test|chore)/.*#\1#p')
+[ -n "$TYPE" ] && sed -i.bak "1s/^/$TYPE: /" "$MSG_FILE" && rm -f "$MSG_FILE.bak"
+exit 0

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# commit-msg: enforce Conventional Commits  ->  type(scope): subject
+MSG_FILE="$1"
+MSG=$(head -n1 "$MSG_FILE")
+
+# allow merge / revert / fixup commits
+if echo "$MSG" | grep -qE '^(Merge|Revert|fixup!|squash!)'; then exit 0; fi
+
+PATTERN='^(feat|fix|docs|style|refactor|test|chore|ci|build|perf)(\([a-z0-9_-]+\))?!?: .+'
+MAX=72
+
+if ! echo "$MSG" | grep -qE "$PATTERN"; then
+  cat <<ERR
+✖ Invalid commit message:
+    "$MSG"
+
+  Expected format:  <type>(<optional scope>): <subject>
+  Types: feat, fix, docs, style, refactor, test, chore, ci, build, perf
+
+  Examples:
+    feat(api): add 5-day forecast endpoint
+    fix: handle city not found error
+    docs(readme): add setup steps
+ERR
+  exit 1
+fi
+
+if [ "${#MSG}" -gt "$MAX" ]; then
+  echo "✖ First line is ${#MSG} chars; keep it ≤ $MAX."
+  exit 1
+fi
+
+if echo "$MSG" | grep -qE '\.$'; then
+  echo "✖ Don't end the subject line with a period."
+  exit 1
+fi
+
+echo "✔ commit message OK"
