@@ -6,11 +6,17 @@ const port = 3000;
 const path = require("path");
 
 app.set("view engine","ejs");
-app.set("views",path.join(__dirname,"src/views"));
+app.set("views",path.join(__dirname,"src","views"));
 app.engine('ejs',ejsMate);
-app.use(express.static(path.join(__dirname,"src/public")));
+app.use(express.static(path.join(__dirname, "src", "public")));
 
 
+app.get("/login",(req,res) => {
+    res.render("login");
+});
+app.post("/login",(req,res) => {
+    res.redirect("/");
+});
 app.get("/", (req, res) => {
    res.render("home");
 });
