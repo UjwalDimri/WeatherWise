@@ -49,6 +49,25 @@ app.get("/weather", async (req, res) => {
         });
     }
 
+    const latitude = Number(req.query.latitude);
+    const longitude = Number(req.query.longitude);
+    if (req.query.latitude && req.query.longitude
+        && Number.isFinite(latitude) && latitude >= -90 && latitude <= 90
+        && Number.isFinite(longitude) && longitude >= -180 && longitude <= 180) {
+        const selectedLocation = {
+            name: query,
+            admin1: typeof req.query.admin1 === "string" ? req.query.admin1 : null,
+            country: typeof req.query.country === "string" ? req.query.country : null,
+            latitude,
+            longitude
+        };
+        return res.render("home", {
+            locations: [selectedLocation],
+            searchTerm: query,
+            error: null
+        });
+    }
+
     try {
         const locations = await searchLocations(query);
         return res.render("home", {
