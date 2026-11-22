@@ -60,11 +60,22 @@
             placeholder="Enter a city, e.g. Dehradun"
             aria-label="Enter city name"
             autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-controls="locationSuggestions"
+            aria-expanded="false"
             value="<%= searchTerm || '' %>"
             required
           >
+          <input type="hidden" name="latitude" id="selectedLatitude">
+          <input type="hidden" name="longitude" id="selectedLongitude">
+          <input type="hidden" name="admin1" id="selectedAdmin1">
+          <input type="hidden" name="country" id="selectedCountry">
           <button type="submit" id="searchButton">Check Weather →</button>
         </form>
+
+        <div class="suggestions" id="locationSuggestions" role="listbox"
+          aria-label="Location suggestions" aria-busy="false" hidden></div>
 
         <p class="search-hint <%= error ? 'search-error' : '' %>" id="searchHint" role="status" aria-live="polite">
           <%= error || 'Try searching for your city to get started.' %>
