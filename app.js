@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require("path");
 const { searchLocations, GeocodingError } = require("./src/services/geocoding");
+const { getCurrentWeather, WeatherError } = require("./src/services/weather");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"src","views"));
@@ -19,7 +20,7 @@ app.post("/login",(req,res) => {
     res.redirect("/");
 });
 app.get("/", (req, res) => {
-   res.render("home", { locations: null, searchTerm: "", error: null });
+   res.render("home", { locations: null, searchTerm: "", error: null, weather: null, selectedLocation: null });
 });
 
 // JSON endpoint for clients that want to use the geocoding service directly.
@@ -45,7 +46,9 @@ app.get("/weather", async (req, res) => {
         return res.status(400).render("home", {
             locations: [],
             searchTerm: query,
-            error: "Enter a city name of 1 to 100 characters."
+            error: "Enter a city name of 1 to 100 characters.",
+            weather: null,
+            selectedLocation: null
         });
     }
 
@@ -61,11 +64,24 @@ app.get("/weather", async (req, res) => {
             latitude,
             longitude
         };
-        return res.render("home", {
-            locations: [selectedLocation],
-            searchTerm: query,
-            error: null
-        });
+        try {
+            const weather = await getCurrentWeather(latitude, longitude);
+            return res.render("home", {
+                locations: [],
+                selectedLocation,
+                searchTerm: query,
+                error: null,
+                weather
+            });
+        } catch (error) {
+            return res.status(error instanceof WeatherError ? error.statusCode : 502).render("home", {
+                locations: [],
+                selectedLocation,
+                searchTerm: query,
+                error: error.message,
+                weather: null
+            });
+        }
     }
 
     try {
@@ -73,13 +89,17 @@ app.get("/weather", async (req, res) => {
         return res.render("home", {
             locations,
             searchTerm: query,
-            error: locations.length ? null : `No locations found for “${query}”. Try another spelling.`
+            error: locations.length ? null : `No locations found for “${query}”. Try another spelling.`,
+            weather: null,
+            selectedLocation: null
         });
     } catch (error) {
         return res.status(error instanceof GeocodingError ? error.statusCode : 502).render("home", {
             locations: [],
             searchTerm: query,
-            error: error.message
+            error: error.message,
+            weather: null,
+            selectedLocation: null
         });
     }
 });
