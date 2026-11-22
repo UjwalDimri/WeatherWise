@@ -15,4 +15,5 @@ const userSchema =new Schema({
     email: String,
     password : String
 });
-
+// for user accounts 
+// databse 
