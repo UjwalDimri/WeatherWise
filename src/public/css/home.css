@@ -242,6 +242,62 @@ a {
   transition: background 0.2s;
 }
 
+.search-error {
+  color: #b42318;
+}
+
+.location-results {
+  width: min(100%, 620px);
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid rgba(24, 52, 82, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 12px 32px rgba(24, 52, 82, 0.08);
+}
+
+.location-results h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.location-results > p {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.location-results ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.location-results li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3px 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f5f8fc;
+}
+
+.location-name {
+  font-weight: 700;
+}
+
+.location-meta,
+.location-coordinates {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.location-coordinates {
+  grid-column: 1 / -1;
+}
+
 .search-form button:hover {
   background: var(--primary-dark);
 }

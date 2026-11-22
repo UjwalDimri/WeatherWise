@@ -60,14 +60,35 @@
             placeholder="Enter a city, e.g. Dehradun"
             aria-label="Enter city name"
             autocomplete="off"
+            value="<%= searchTerm || '' %>"
             required
           >
           <button type="submit" id="searchButton">Check Weather →</button>
         </form>
 
-        <p class="search-hint" id="searchHint">
-          Try searching for your city to get started.
+        <p class="search-hint <%= error ? 'search-error' : '' %>" id="searchHint" role="status" aria-live="polite">
+          <%= error || 'Try searching for your city to get started.' %>
         </p>
+
+        <% if (Array.isArray(locations) && locations.length > 0) { %>
+          <section class="location-results" aria-labelledby="location-results-title">
+            <h2 id="location-results-title">Matching locations</h2>
+            <p>Choose the place you meant. Weather details will use these coordinates.</p>
+            <ul>
+              <% locations.forEach((location) => { %>
+                <li>
+                  <span class="location-name"><%= location.name %></span>
+                  <span class="location-meta">
+                    <%= [location.admin1, location.country].filter(Boolean).join(', ') %>
+                  </span>
+                  <span class="location-coordinates">
+                    <%= location.latitude %>, <%= location.longitude %>
+                  </span>
+                </li>
+              <% }) %>
+            </ul>
+          </section>
+        <% } %>
 
         <div class="hero-points">
           <span>✓ Easy to understand</span>
