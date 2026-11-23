@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,14 +60,56 @@
             placeholder="Enter a city, e.g. Dehradun"
             aria-label="Enter city name"
             autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-controls="locationSuggestions"
+            aria-expanded="false"
+            value="<%= searchTerm || '' %>"
             required
           >
+          <input type="hidden" name="latitude" id="selectedLatitude">
+          <input type="hidden" name="longitude" id="selectedLongitude">
+          <input type="hidden" name="admin1" id="selectedAdmin1">
+          <input type="hidden" name="country" id="selectedCountry">
           <button type="submit" id="searchButton">Check Weather →</button>
         </form>
 
-        <p class="search-hint" id="searchHint">
-          Try searching for your city to get started.
+        <div class="suggestions" id="locationSuggestions" role="listbox"
+          aria-label="Location suggestions" aria-busy="false" hidden></div>
+
+        <p class="search-hint <%= error ? 'search-error' : '' %>" id="searchHint" role="status" aria-live="polite">
+          <%= error || 'Try searching for your city to get started.' %>
         </p>
+
+        <% if (!weather && Array.isArray(locations) && locations.length > 0) { %>
+          <section class="location-results" aria-labelledby="location-results-title">
+            <h2 id="location-results-title">Matching locations</h2>
+            <p>Select the place you meant to load its current conditions.</p>
+            <ul>
+              <% locations.forEach((location) => { %>
+                <li>
+                  <form class="location-choice" action="/weather" method="GET">
+                    <input type="hidden" name="city" value="<%= location.name %>">
+                    <input type="hidden" name="latitude" value="<%= location.latitude %>">
+                    <input type="hidden" name="longitude" value="<%= location.longitude %>">
+                    <input type="hidden" name="admin1" value="<%= location.admin1 || '' %>">
+                    <input type="hidden" name="country" value="<%= location.country || '' %>">
+                    <button type="submit" class="location-choice-button">
+                      <span class="location-name"><%= location.name %></span>
+                      <span class="location-meta">
+                        <%= [location.admin1, location.country].filter(Boolean).join(', ') %>
+                      </span>
+                      <span class="location-coordinates">
+                        <%= location.latitude %>, <%= location.longitude %>
+                      </span>
+                      <span class="location-action">View current weather →</span>
+                    </button>
+                  </form>
+                </li>
+              <% }) %>
+            </ul>
+          </section>
+        <% } %>
 
         <div class="hero-points">
           <span>✓ Easy to understand</span>
@@ -88,40 +129,45 @@
         <div class="weather-preview">
           <div class="preview-top">
             <div>
-              <span class="preview-label">YOUR WEATHER</span>
-              <h3>Weather at a glance</h3>
+              <span class="preview-label"><%= weather ? 'CURRENT CONDITIONS' : 'CURRENT WEATHER' %></span>
+              <h3><%= selectedLocation ? [selectedLocation.name, selectedLocation.admin1, selectedLocation.country].filter(Boolean).join(', ') : 'Weather at a glance' %></h3>
             </div>
-            <span class="live-indicator">● Preview</span>
+            <span class="live-indicator"><%= weather ? '● Live data' : 'Ready to search' %></span>
           </div>
 
           <div class="preview-middle">
             <div>
-              <p class="preview-temperature">24°</p>
-              <p class="preview-condition">Partly cloudy</p>
+              <p class="preview-temperature"><%= weather ? weather.temperature : '—' %><%= weather ? '°C' : '' %></p>
+              <p class="preview-condition"><%= weather ? weather.condition : 'Search for a location to see current conditions.' %></p>
             </div>
-            <div class="preview-icon">🌤️</div>
+            <div class="preview-icon"><%= weather ? weather.icon : '🌡️' %></div>
           </div>
 
           <div class="preview-details">
             <div>
+              <span>🌡️</span>
+              <p>Feels like</p>
+              <strong><%= weather && Number.isFinite(weather.feelsLike) ? `${weather.feelsLike}°C` : '—' %></strong>
+            </div>
+            <div>
               <span>💧</span>
               <p>Humidity</p>
-              <strong>65%</strong>
+              <strong><%= weather && Number.isFinite(weather.humidity) ? `${weather.humidity}%` : '—' %></strong>
             </div>
             <div>
               <span>🌬️</span>
               <p>Wind</p>
-              <strong>12 km/h</strong>
+              <strong><%= weather && Number.isFinite(weather.windSpeed) ? `${weather.windSpeed} km/h` : '—' %></strong>
             </div>
             <div>
               <span>🌧️</span>
-              <p>Rain chance</p>
-              <strong>20%</strong>
+              <p>Precipitation</p>
+              <strong><%= weather && Number.isFinite(weather.precipitation) ? `${weather.precipitation} mm` : '—' %></strong>
             </div>
           </div>
 
           <p class="preview-note">
-            Illustrative sample data — not live weather.
+            <%= weather ? `Updated ${weather.time} · Open-Meteo` : 'Search for a city to load live current conditions.' %>
           </p>
         </div>
       </div>
