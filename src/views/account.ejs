@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your WeatherWise account and saved locations.">
+  <title>My Account | WeatherWise</title>
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/account.css">
+</head>
+<body>
+  <header class="navbar">
+    <a href="/" class="logo"><span class="logo-icon">☀</span>Weather<span>Wise</span></a>
+    <nav class="nav-links"><a href="/">Home</a><a href="/account" class="active">My locations</a></nav>
+    <form action="/logout" method="POST"><button class="nav-button account-logout" type="submit">Log out</button></form>
+  </header>
+  <main class="account-page">
+    <section class="account-heading">
+      <p class="account-eyebrow">YOUR WEATHERWISE</p>
+      <h1>Hello, <%= user.username %>.</h1>
+      <p>Your saved locations are private to your account.</p>
+      <a href="/#weather-search" class="account-add">＋ Add a location</a>
+    </section>
+    <% if (error) { %><p class="account-error" role="status"><%= error %></p><% } %>
+    <% const savedLocations = user.savedLocations || []; %>
+    <% if (savedLocations.length) { %>
+      <section class="saved-grid" aria-label="Your saved locations">
+        <% savedLocations.forEach((location, index) => { %>
+          <article class="saved-card">
+            <div class="saved-card-icon" aria-hidden="true">☀</div>
+            <h2><%= location.name %></h2>
+            <p><%= [location.admin1, location.country].filter(Boolean).join(', ') || 'Saved location' %></p>
+            <a class="saved-weather" href="/weather?city=<%= encodeURIComponent(location.name) %>&latitude=<%= location.latitude %>&longitude=<%= location.longitude %>&admin1=<%= encodeURIComponent(location.admin1 || '') %>&country=<%= encodeURIComponent(location.country || '') %>">View weather →</a>
+            <form action="/account/locations/<%= index %>/delete" method="POST"><button class="saved-remove" type="submit" aria-label="Remove <%= location.name %>">Remove</button></form>
+          </article>
+        <% }); %>
+      </section>
+    <% } else { %>
+      <section class="account-empty"><div aria-hidden="true">⌖</div><h2>No saved locations yet</h2><p>Search for a place and open its weather. It will appear here for your next visit.</p><a href="/#weather-search" class="account-add">Find a location →</a></section>
+    <% } %>
+  </main>
+</body>
+</html>

@@ -22,7 +22,7 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 - Graceful error handling for invalid locations or API failures
 - Data refresh on demand
 - Responsive interface (desktop, tablet, mobile)
-- Search history stored in MongoDB
+- Private saved locations for each user account
 
 ## Tech Stack
 
@@ -92,7 +92,20 @@ The app will be available at `http://localhost:3000`.
 |---|---|
 | `WEATHER_API_KEY` | API key for the external weather service |
 | `MONGODB_URI` | MongoDB connection string |
+| `SESSION_SECRET` | Private signing key for login cookies |
 | `PORT` | Port for the Express server (default: 3000) |
+
+Create an account at `/signup`. After signing in, WeatherWise opens your account page. Selected locations are saved to that account and are not shared with other users. Set a unique, long `SESSION_SECRET` in deployment settings; the development fallback is only for local use.
+
+### How the account code works
+
+1. The signup and login forms send their fields to `/signup` and `/login`.
+2. `src/routes/auth.js` checks those fields. It hashes a new password before creating the user, and checks the saved hash during login.
+3. `src/models/user.js` describes which information MongoDB stores for each user.
+4. `src/middleware/auth.js` checks the browser's signed login cookie and makes the signed-in user available to routes as `req.user`.
+5. `src/routes/pages.js` shows the signed-in user's account page. `src/routes/weather.js` saves a selected place to that user's MongoDB record.
+
+The database connection is opened by `src/db.js` when a route needs MongoDB. This keeps the connection code in one place.
 
 ## Running Tests
 

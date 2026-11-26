@@ -1,6 +1,8 @@
 const express = require("express");
 const { searchLocations, GeocodingError } = require("../services/geocoding");
 const { getWeatherWithForecast, WeatherError } = require("../services/weather");
+const User = require("../models/user");
+const { connectDatabase } = require("../db");
 
 const router = express.Router();
 
@@ -46,6 +48,27 @@ router.get("/weather", async (req, res) => {
             latitude,
             longitude
         };
+        if (req.user) {
+            try {
+                await connectDatabase();
+                const user = await User.findById(req.user.id);
+                if (user) {
+                    // If this place is already saved, remove the old copy first.
+                    const oldLocationIndex = user.savedLocations.findIndex((location) =>
+                        location.latitude === latitude && location.longitude === longitude
+                    );
+                    if (oldLocationIndex !== -1) {
+                        user.savedLocations.splice(oldLocationIndex, 1);
+                    }
+
+                    // Save the selected place to this signed-in user's account.
+                    user.savedLocations.push(selectedLocation);
+                    await user.save();
+                }
+            } catch (error) {
+                console.error("Saving location failed:", error.message);
+            }
+        }
         try {
             const { current: weather, forecast } = await getWeatherWithForecast(latitude, longitude);
             return res.render("home", {

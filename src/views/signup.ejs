@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account | WeatherWise</title>
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-white border-bottom px-3 px-md-5">
+    <div class="container"><a class="navbar-brand fw-bold fs-4" href="/">☀ Weather<span class="text-primary">Wise</span></a>
+      <a href="/" class="btn btn-outline-primary btn-sm">Back to Home</a></div>
+  </nav>
+  <main class="login-section"><div class="container"><div class="row justify-content-center align-items-center"><div class="col-12 col-md-8 col-lg-5">
+    <div class="login-card">
+      <div class="text-center mb-4"><div class="weather-icon">🌤️</div><h1 class="login-title">Create your account</h1><p class="text-secondary">Save your places and keep them together.</p></div>
+      <% if (error) { %><div class="alert alert-danger" role="alert"><%= error %></div><% } %>
+      <form action="/signup" method="POST">
+        <div class="mb-3"><label for="username" class="form-label">Name</label><input class="form-control" id="username" name="username" maxlength="60" autocomplete="name" required></div>
+        <div class="mb-3"><label for="email" class="form-label">Email address</label><input type="email" class="form-control" id="email" name="email" autocomplete="email" required></div>
+        <div class="mb-4"><label for="password" class="form-label">Password</label><input type="password" class="form-control" id="password" name="password" minlength="8" autocomplete="new-password" required><small class="text-secondary">Use at least 8 characters.</small></div>
+        <button type="submit" class="btn btn-primary w-100 login-btn">Create Account →</button>
+      </form>
+      <p class="text-center mt-4 mb-0">Already have an account? <a href="/login">Sign in</a></p>
+    </div>
+  </div></div></div></main>
+</body>
+</html>
