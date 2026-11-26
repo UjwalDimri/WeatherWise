@@ -173,6 +173,32 @@
       </div>
     </section>
 
+    <% if (Array.isArray(forecast) && forecast[0] && (forecast[0].sunrise || forecast[0].sunset)) { %>
+      <section class="daylight-section" aria-labelledby="daylight-title">
+        <article class="daylight-card">
+          <div class="daylight-heading">
+            <div class="daylight-heading-icon" aria-hidden="true">🌅</div>
+            <div>
+              <span class="eyebrow">TODAY'S DAYLIGHT</span>
+              <h2 id="daylight-title">Sunrise &amp; sunset</h2>
+              <p><%= selectedLocation ? [selectedLocation.name, selectedLocation.country].filter(Boolean).join(', ') : 'Selected location' %> · local time</p>
+            </div>
+          </div>
+          <div class="daylight-times">
+            <div class="daylight-time">
+              <span class="daylight-symbol sunrise-symbol" aria-hidden="true">☀️</span>
+              <div><span>Sunrise</span><strong><%= forecast[0].sunrise || 'Unavailable' %></strong></div>
+            </div>
+            <div class="daylight-time">
+              <span class="daylight-symbol sunset-symbol" aria-hidden="true">🌇</span>
+              <div><span>Sunset</span><strong><%= forecast[0].sunset || 'Unavailable' %></strong></div>
+            </div>
+          </div>
+          <p class="daylight-date"><%= forecast[0].date %></p>
+        </article>
+      </section>
+    <% } %>
+
     <% if (Array.isArray(forecast) && forecast.length > 0) { %>
       <section class="forecast-section" aria-labelledby="forecast-title">
         <div class="forecast-heading">

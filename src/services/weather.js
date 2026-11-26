@@ -53,6 +53,19 @@ function describeWeatherCode(code, isDay, temperature = null, lowTemperature = t
     return [condition, defaultIcon];
 }
 
+function formatLocalTime(value) {
+    if (typeof value !== "string") return null;
+    const match = value.match(/T(\d{2}):(\d{2})/);
+    if (!match) return null;
+
+    const hour24 = Number(match[1]);
+    const minute = Number(match[2]);
+    if (hour24 > 23 || minute > 59) return null;
+
+    const hour12 = hour24 % 12 || 12;
+    return `${hour12}:${String(minute).padStart(2, "0")} ${hour24 >= 12 ? "PM" : "AM"}`;
+}
+
 /** Fetch current conditions and a 7-day forecast for a selected location. */
 async function fetchWeatherData(latitude, longitude, requireForecast = false) {
     const lat = Number(latitude);
@@ -67,7 +80,7 @@ async function fetchWeatherData(latitude, longitude, requireForecast = false) {
         latitude: String(lat),
         longitude: String(lon),
         current: "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m",
-        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max",
+        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset",
         forecast_days: "7",
         temperature_unit: "celsius",
         wind_speed_unit: "kmh",
@@ -138,7 +151,9 @@ async function fetchWeatherData(latitude, longitude, requireForecast = false) {
             low,
             precipitationProbability: daily.precipitation_probability_max?.[index] ?? null,
             precipitation: daily.precipitation_sum?.[index] ?? null,
-            windSpeed: daily.wind_speed_10m_max?.[index] ?? null
+            windSpeed: daily.wind_speed_10m_max?.[index] ?? null,
+            sunrise: formatLocalTime(daily.sunrise?.[index]),
+            sunset: formatLocalTime(daily.sunset?.[index])
         };
     });
 

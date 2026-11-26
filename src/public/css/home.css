@@ -513,6 +513,91 @@ a {
   text-align: center;
 }
 
+/* Sunrise and sunset */
+
+.daylight-section {
+  padding: 0 7% 34px;
+  background: #f5f9ff;
+}
+
+.daylight-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 28px 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 20px;
+  background: linear-gradient(115deg, #ffffff, #fef9ef);
+  box-shadow: 0 14px 36px rgba(30, 64, 175, 0.07);
+}
+
+.daylight-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.daylight-heading-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff1d6;
+  font-size: 1.8rem;
+}
+
+.daylight-heading h2 {
+  margin-top: 3px;
+  font-size: 1.3rem;
+}
+
+.daylight-heading p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.daylight-times {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.daylight-time {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.daylight-symbol {
+  font-size: 1.65rem;
+}
+
+.daylight-time div {
+  display: grid;
+  gap: 4px;
+}
+
+.daylight-time div span,
+.daylight-date {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.daylight-time strong {
+  font-size: 1.1rem;
+}
+
+.daylight-date {
+  margin-top: 14px;
+  text-align: right;
+}
+
 /* Daily forecast */
 
 .forecast-section {
@@ -858,6 +943,10 @@ a {
     padding: 58px 6%;
   }
 
+  .daylight-section {
+    padding: 0 6% 30px;
+  }
+
   .forecast-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -948,6 +1037,15 @@ a {
   .forecast-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .daylight-card {
+    padding: 20px 17px 15px;
+  }
+
+  .daylight-times {
+    grid-template-columns: 1fr;
+    gap: 9px;
   }
 
   .feature-card {
