@@ -1,6 +1,6 @@
 const express = require("express");
 const { searchLocations, GeocodingError } = require("../services/geocoding");
-const { getCurrentWeather, WeatherError } = require("../services/weather");
+const { getWeatherWithForecast, WeatherError } = require("../services/weather");
 
 const router = express.Router();
 
@@ -29,6 +29,7 @@ router.get("/weather", async (req, res) => {
             searchTerm: query,
             error: "Enter a city name of 1 to 100 characters.",
             weather: null,
+            forecast: null,
             selectedLocation: null
         });
     }
@@ -46,13 +47,14 @@ router.get("/weather", async (req, res) => {
             longitude
         };
         try {
-            const weather = await getCurrentWeather(latitude, longitude);
+            const { current: weather, forecast } = await getWeatherWithForecast(latitude, longitude);
             return res.render("home", {
                 locations: [],
                 selectedLocation,
                 searchTerm: query,
                 error: null,
-                weather
+                weather,
+                forecast
             });
         } catch (error) {
             return res.status(error instanceof WeatherError ? error.statusCode : 502).render("home", {
@@ -60,7 +62,8 @@ router.get("/weather", async (req, res) => {
                 selectedLocation,
                 searchTerm: query,
                 error: error.message,
-                weather: null
+                weather: null,
+                forecast: null
             });
         }
     }
@@ -72,6 +75,7 @@ router.get("/weather", async (req, res) => {
             searchTerm: query,
             error: locations.length ? null : `No locations found for “${query}”. Try another spelling.`,
             weather: null,
+            forecast: null,
             selectedLocation: null
         });
     } catch (error) {
@@ -80,6 +84,7 @@ router.get("/weather", async (req, res) => {
             searchTerm: query,
             error: error.message,
             weather: null,
+            forecast: null,
             selectedLocation: null
         });
     }

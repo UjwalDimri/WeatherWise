@@ -13,6 +13,22 @@ if (currentYear) {
   currentYear.textContent = new Date().getFullYear();
 }
 
+// Let visitors switch between the first five forecast days and the full week.
+const forecastRangeButtons = document.querySelectorAll("[data-forecast-range]");
+const forecastCards = document.querySelectorAll("[data-forecast-index]");
+
+forecastRangeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const visibleDays = Number(button.dataset.forecastRange);
+    forecastRangeButtons.forEach((rangeButton) => {
+      rangeButton.setAttribute("aria-pressed", String(rangeButton === button));
+    });
+    forecastCards.forEach((card) => {
+      card.hidden = Number(card.dataset.forecastIndex) >= visibleDays;
+    });
+  });
+});
+
 // Mobile navigation
 if (menuToggle && navLinks) {
   menuToggle.addEventListener("click", () => {

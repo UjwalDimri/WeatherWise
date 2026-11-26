@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
         searchTerm: "",
         error: null,
         weather: null,
+        forecast: null,
         selectedLocation: null
     });
 });
