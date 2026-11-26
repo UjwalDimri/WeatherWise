@@ -3,7 +3,6 @@ name: WeatherWise CI
 
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -23,6 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run automated tests
+        run: npm test
 
       - name: Check JavaScript syntax
         run: npm run check
