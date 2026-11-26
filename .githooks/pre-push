@@ -8,8 +8,13 @@ if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
 fi
 
 if [ -f package.json ] && grep -q '"test"' package.json && ! grep -q 'no test specified' package.json; then
-  echo "Running full test suite before push..."
+  echo "Running tests before push..."
   npm test --silent || { echo "✖ Tests failed. Push blocked."; exit 1; }
+fi
+
+if [ -f package.json ] && grep -q '"check"' package.json; then
+  echo "Checking JavaScript syntax before push..."
+  npm run check --silent || { echo "✖ Syntax check failed. Push blocked."; exit 1; }
 fi
 
 if [ -f package.json ] && grep -q '"build"' package.json; then
