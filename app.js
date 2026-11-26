@@ -7,7 +7,7 @@ const pagesRouter = require("./src/routes/pages");
 const weatherRouter = require("./src/routes/weather");
 const authRouter = require("./src/routes/auth");
 const { attachUser } = require("./src/middleware/auth");
-main
+
 
 const app = express();
 const port = process.env.PORT || 3000;
