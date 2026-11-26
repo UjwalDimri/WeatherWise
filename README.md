@@ -63,7 +63,6 @@ weatherwise/
 ### Prerequisites
 - Node.js (v18+)
 - MongoDB (local instance or MongoDB Atlas)
-- A Weather API key (e.g. OpenWeatherMap)
 
 ### Installation
 
