@@ -32,6 +32,8 @@ router.get("/weather", async (req, res) => {
             error: "Enter a city name of 1 to 100 characters.",
             weather: null,
             forecast: null,
+            suggestions: null,
+            outfitDecorations: null,
             selectedLocation: null
         });
     }
@@ -70,14 +72,16 @@ router.get("/weather", async (req, res) => {
             }
         }
         try {
-            const { current: weather, forecast } = await getWeatherWithForecast(latitude, longitude);
+            const { current: weather, forecast, suggestions, outfitDecorations } = await getWeatherWithForecast(latitude, longitude);
             return res.render("home", {
                 locations: [],
                 selectedLocation,
                 searchTerm: query,
                 error: null,
                 weather,
-                forecast
+                forecast,
+                suggestions,
+                outfitDecorations
             });
         } catch (error) {
             return res.status(error instanceof WeatherError ? error.statusCode : 502).render("home", {
@@ -86,7 +90,9 @@ router.get("/weather", async (req, res) => {
                 searchTerm: query,
                 error: error.message,
                 weather: null,
-                forecast: null
+                forecast: null,
+                suggestions: null,
+                outfitDecorations: null
             });
         }
     }
@@ -99,6 +105,8 @@ router.get("/weather", async (req, res) => {
             error: locations.length ? null : `No locations found for “${query}”. Try another spelling.`,
             weather: null,
             forecast: null,
+            suggestions: null,
+            outfitDecorations: null,
             selectedLocation: null
         });
     } catch (error) {
@@ -108,6 +116,8 @@ router.get("/weather", async (req, res) => {
             error: error.message,
             weather: null,
             forecast: null,
+            suggestions: null,
+            outfitDecorations: null,
             selectedLocation: null
         });
     }

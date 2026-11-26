@@ -66,6 +66,65 @@ function formatLocalTime(value) {
     return `${hour12}:${String(minute).padStart(2, "0")} ${hour24 >= 12 ? "PM" : "AM"}`;
 }
 
+function buildWeatherSuggestions(current, today) {
+    const suggestions = [];
+    const snowCodes = [71, 73, 75, 77, 85, 86];
+    const wetWeatherCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
+
+    if (snowCodes.includes(current.weather_code) || snowCodes.includes(today.weatherCode)) {
+        suggestions.push({ icon: "🧤", message: "Snow is possible—wear warm layers and shoes with good grip." });
+    } else if (wetWeatherCodes.includes(current.weather_code)
+        || current.precipitation > 0
+        || (Number.isFinite(today.precipitationProbability) && today.precipitationProbability >= 50)) {
+        suggestions.push({ icon: "☂️", message: "Rain is possible today—consider carrying an umbrella." });
+    }
+
+    if (current.temperature_2m <= 0) {
+        suggestions.push({ icon: "🧤", message: "It's freezing—wear a warm coat and gloves." });
+    } else if (current.temperature_2m <= 16) {
+        suggestions.push({ icon: "🧥", message: "It's chilly—wear a jacket or warm layer." });
+    } else if (current.temperature_2m >= 28) {
+        suggestions.push({ icon: "🧢", message: "It's hot—choose light clothes and drink water." });
+    }
+
+    if (current.wind_speed_10m >= 25) {
+        suggestions.push({ icon: "🍃", message: "It's windy—secure loose items outdoors." });
+    }
+
+    if (suggestions.length === 0) {
+        suggestions.push({ icon: "🌤️", message: "Conditions look mild—enjoy your day outdoors." });
+    }
+
+    return suggestions.slice(0, 2);
+}
+
+function buildOutfitDecorations(current, today) {
+    const snowCodes = [71, 73, 75, 77, 85, 86];
+    const wetWeatherCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
+    const isSnowy = snowCodes.includes(current.weather_code) || snowCodes.includes(today.weatherCode);
+    const isWet = wetWeatherCodes.includes(current.weather_code)
+        || current.precipitation > 0
+        || (Number.isFinite(today.precipitationProbability) && today.precipitationProbability >= 50);
+
+    if (isSnowy) {
+        return { theme: "cold", items: ["🧥", "🧣", "🥾"] };
+    }
+    if (isWet) {
+        return { theme: "rain", items: ["🧥", "🥾", "☂️"] };
+    }
+    if (current.temperature_2m <= 16) {
+        return { theme: "cold", items: ["🧥", "🧣", "🧤"] };
+    }
+    if (current.temperature_2m >= 28) {
+        return { theme: "summer", items: ["👕", "🩳", "🕶️"] };
+    }
+    if (current.wind_speed_10m >= 25) {
+        return { theme: "breezy", items: ["🧥", "🧢", "🍃"] };
+    }
+
+    return { theme: "mild", items: ["🧥", "👖", "👟"] };
+}
+
 /** Fetch current conditions and a 7-day forecast for a selected location. */
 async function fetchWeatherData(latitude, longitude, requireForecast = false) {
     const lat = Number(latitude);
@@ -157,7 +216,17 @@ async function fetchWeatherData(latitude, longitude, requireForecast = false) {
         };
     });
 
-    return { current: currentWeather, forecast };
+    const suggestions = buildWeatherSuggestions(current, {
+        weatherCode: daily.weather_code[0],
+        precipitationProbability: daily.precipitation_probability_max?.[0]
+    });
+    const today = {
+        weatherCode: daily.weather_code[0],
+        precipitationProbability: daily.precipitation_probability_max?.[0]
+    };
+    const outfitDecorations = buildOutfitDecorations(current, today);
+
+    return { current: currentWeather, forecast, suggestions, outfitDecorations };
 }
 
 /** Fetch current conditions for a selected latitude/longitude from Open-Meteo. */
