@@ -36,7 +36,6 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 | Repository | GitHub |
 | CI/CD | GitHub Actions |
 | Testing | Node's Built-in test runner |
-| Containerization | Docker |
 | Deployment | Render / Railway |
 
 ## Project Structure
