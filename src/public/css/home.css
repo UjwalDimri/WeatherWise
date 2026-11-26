@@ -126,6 +126,12 @@ a {
   color: var(--text);
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Hero */
 
 .hero {
@@ -620,6 +626,17 @@ a {
     font-size: 0.75rem;
   }
 
+  .nav-actions .nav-button {
+    display: inline-flex;
+    margin-left: 0;
+    white-space: nowrap;
+  }
+
+  .nav-actions {
+    margin-left: auto;
+    gap: 6px;
+  }
+
   .menu-toggle {
     display: block;
   }
@@ -658,6 +675,10 @@ a {
   }
 
   .nav-button {
+    display: none;
+  }
+
+  .nav-actions .nav-button:last-child {
     display: none;
   }
 

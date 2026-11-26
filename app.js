@@ -1,26 +1,35 @@
-const express = require("express");
-const ejs = require('ejs');
-const ejsMate = require("ejs-mate");
-const app = express();
-const port = 3000;
-const path = require("path");
+require("./src/config/load-env");
 
-app.set("view engine","ejs");
-app.set("views",path.join(__dirname,"src","views"));
-app.engine('ejs',ejsMate);
+const express = require("express");
+const ejsMate = require("ejs-mate");
+const path = require("node:path");
+const pagesRouter = require("./src/routes/pages");
+const weatherRouter = require("./src/routes/weather");
+const authRouter = require("./src/routes/auth");
+const { attachUser } = require("./src/middleware/auth");
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src", "views"));
+app.engine("ejs", ejsMate);
+app.use(express.urlencoded({ extended: false }));
+app.use(attachUser);
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+});
 app.use(express.static(path.join(__dirname, "src", "public")));
 
+app.use("/", authRouter);
+app.use("/", pagesRouter);
+app.use("/", weatherRouter);
 
-app.get("/login",(req,res) => {
-    res.render("login");
-});
-app.post("/login",(req,res) => {
-    res.redirect("/");
-});
-app.get("/", (req, res) => {
-   res.render("home");
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Listening on port ${port}`);
+    });
+}
 
-app.listen(port,(req,res)=>{
-    console.log("Listening to the port 3000");
-});
+module.exports = app;
