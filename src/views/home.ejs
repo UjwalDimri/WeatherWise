@@ -173,6 +173,42 @@
       </div>
     </section>
 
+    <% if (Array.isArray(forecast) && forecast.length > 0) { %>
+      <section class="forecast-section" aria-labelledby="forecast-title">
+        <div class="forecast-heading">
+          <div>
+            <span class="eyebrow">THE WEEK AHEAD</span>
+            <h2 id="forecast-title">5- and 7-day forecast</h2>
+            <p>Daily conditions for <%= selectedLocation ? selectedLocation.name : 'your location' %>.</p>
+          </div>
+          <div class="forecast-range" role="group" aria-label="Forecast length">
+            <button type="button" data-forecast-range="5" aria-pressed="false">5 days</button>
+            <button type="button" data-forecast-range="7" aria-pressed="true">7 days</button>
+          </div>
+        </div>
+
+        <div class="forecast-grid" id="forecastCards">
+          <% forecast.forEach((day, index) => { %>
+            <article class="forecast-card" data-forecast-index="<%= index %>">
+              <h3><%= day.dayLabel %></h3>
+              <p class="forecast-date"><%= day.date %></p>
+              <span class="forecast-icon" role="img" aria-label="<%= day.condition %>"><%= day.icon %></span>
+              <p class="forecast-condition"><%= day.condition %></p>
+              <p class="forecast-temperatures">
+                <strong><%= Number.isFinite(day.high) ? `${Math.round(day.high)}°` : '—' %></strong>
+                <span><%= Number.isFinite(day.low) ? `${Math.round(day.low)}°` : '—' %></span>
+              </p>
+              <div class="forecast-details">
+                <span>🌧️ <%= Number.isFinite(day.precipitationProbability) ? `${day.precipitationProbability}%` : '—' %></span>
+                <span>💨 <%= Number.isFinite(day.windSpeed) ? `${Math.round(day.windSpeed)} km/h` : '—' %></span>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+        <p class="forecast-source">Daily forecast from Open-Meteo. Temperatures shown in °C.</p>
+      </section>
+    <% } %>
+
     <section class="features section" id="features">
       <div class="section-heading">
         <span class="eyebrow">WHAT YOU GET</span>
