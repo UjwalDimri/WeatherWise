@@ -15,6 +15,10 @@ app.use(express.static(path.join(__dirname, "src", "public")));
 app.use("/", pagesRouter);
 app.use("/", weatherRouter);
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Listening on port ${port}`);
+    });
+}
+
+module.exports = app;

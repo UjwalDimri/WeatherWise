@@ -1,7 +1,7 @@
 const { afterEach, describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { searchLocations, GeocodingError } = require("../src/services/geocoding");
-const { getCurrentWeather, WeatherError } = require("../src/services/weather");
+const { getCurrentWeather, getWeatherWithForecast, WeatherError } = require("../src/services/weather");
 
 const originalFetch = global.fetch;
 
@@ -104,6 +104,73 @@ describe("weather service", () => {
     it("reports unavailable conditions when the response lacks a current temperature", async () => {
         global.fetch = async () => ({ ok: true, json: async () => ({ current: {} }) });
         await assert.rejects(getCurrentWeather(0, 0), (error) =>
+            error instanceof WeatherError && error.statusCode === 502);
+    });
+
+    it("maps seven forecast days, local sun times, and temperature-aware icons", async () => {
+        global.fetch = async (url) => {
+            const params = new URL(url).searchParams;
+            assert.equal(params.get("forecast_days"), "7");
+            assert.equal(params.get("timezone"), "auto");
+            assert.match(params.get("daily"), /sunrise,sunset/);
+
+            return {
+                ok: true,
+                json: async () => ({
+                    current: {
+                        time: "2026-11-26T12:00",
+                        temperature_2m: 12,
+                        apparent_temperature: 11,
+                        relative_humidity_2m: 70,
+                        wind_speed_10m: 8,
+                        precipitation: 0,
+                        weather_code: 0,
+                        is_day: 1
+                    },
+                    daily: {
+                        time: ["2026-11-26", "2026-11-27"],
+                        weather_code: [0, 61],
+                        temperature_2m_max: [4, 12],
+                        temperature_2m_min: [-2, 7],
+                        precipitation_probability_max: [10, 80],
+                        precipitation_sum: [0, 4.2],
+                        wind_speed_10m_max: [9, 18],
+                        sunrise: ["2026-11-26T06:42", "2026-11-27T06:43"],
+                        sunset: ["2026-11-26T17:51", "2026-11-27T17:50"]
+                    }
+                })
+            };
+        };
+
+        const result = await getWeatherWithForecast(48.85, 2.35);
+        assert.equal(result.forecast.length, 2);
+        assert.deepEqual(result.forecast[0], {
+            date: "2026-11-26",
+            dayLabel: "Thu",
+            condition: "Clear sky",
+            icon: "🥶",
+            high: 4,
+            low: -2,
+            precipitationProbability: 10,
+            precipitation: 0,
+            windSpeed: 9,
+            sunrise: "6:42 AM",
+            sunset: "5:51 PM"
+        });
+        assert.equal(result.forecast[1].condition, "Slight rain");
+        assert.equal(result.forecast[1].icon, "🌧️");
+    });
+
+    it("rejects a successful API response that has no usable daily forecast", async () => {
+        global.fetch = async () => ({
+            ok: true,
+            json: async () => ({
+                current: { temperature_2m: 12 },
+                daily: { time: [], weather_code: [] }
+            })
+        });
+
+        await assert.rejects(getWeatherWithForecast(0, 0), (error) =>
             error instanceof WeatherError && error.statusCode === 502);
     });
 });
