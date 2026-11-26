@@ -35,7 +35,7 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 | Version Control | Git |
 | Repository | GitHub |
 | CI/CD | GitHub Actions |
-| Testing | Jest |
+| Testing | Node's Built-in test runner |
 | Containerization | Docker |
 | Deployment | Render / Railway |
 

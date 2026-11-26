@@ -54,6 +54,11 @@ router.post("/account/locations/:index/delete", requireLogin, async (req, res) =
         console.error("Removing saved location failed:", error.message);
         return res.status(503).redirect("/account");
     }
+    res.render("login");
+});
+
+router.post("/login", (req, res) => {
+    res.redirect("/");
 });
 
 module.exports = router;
