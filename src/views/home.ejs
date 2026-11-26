@@ -133,6 +133,14 @@
         <div class="cloud cloud-one">☁</div>
         <div class="cloud cloud-two">☁</div>
 
+        <% if (outfitDecorations && Array.isArray(outfitDecorations.items)) { %>
+          <div class="outfit-float-layer outfit-<%= outfitDecorations.theme %>" aria-hidden="true">
+            <% outfitDecorations.items.forEach((item, index) => { %>
+              <span class="outfit-float outfit-float-<%= index + 1 %>"><%= item %></span>
+            <% }) %>
+          </div>
+        <% } %>
+
         <div class="weather-preview">
           <div class="preview-top">
             <div>
@@ -176,6 +184,18 @@
           <p class="preview-note">
             <%= weather ? `Updated ${weather.time} · Open-Meteo` : 'Search for a city to load live current conditions.' %>
           </p>
+
+          <% if (Array.isArray(suggestions) && suggestions.length > 0) { %>
+            <aside class="weather-tips" aria-label="Weather suggestions">
+              <p class="weather-tips-heading">QUICK WEATHER TIPS</p>
+              <% suggestions.forEach((tip) => { %>
+                <div class="weather-tip">
+                  <span class="weather-tip-icon" aria-hidden="true"><%= tip.icon %></span>
+                  <p><%= tip.message %></p>
+                </div>
+              <% }) %>
+            </aside>
+          <% } %>
         </div>
       </div>
     </section>

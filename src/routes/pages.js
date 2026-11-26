@@ -13,6 +13,8 @@ router.get("/", (req, res) => {
         error: null,
         weather: null,
         forecast: null,
+        suggestions: null,
+        outfitDecorations: null,
         selectedLocation: null
     });
 });
