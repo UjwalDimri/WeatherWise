@@ -8,7 +8,7 @@
     "prepare": "git config core.hooksPath .githooks",
     "dev": "nodemon app.js",
     "test": "node --test",
-    "check": "node --check app.js && node --check src/services/geocoding.js && node --check src/public/js/home.js"
+    "check": "node --check app.js && node --check src/services/geocoding.js && node --check public/js/home.js"
   },
   "repository": {
     "type": "git",

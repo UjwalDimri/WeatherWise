@@ -37,26 +37,24 @@ This project is built for **CSDV2010P — DevOps Fundamentals and SCM**, B.Tech 
 | CI/CD | GitHub Actions |
 | Testing | Node's Built-in test runner |
 | Containerization | Docker |
-| Deployment | Render / Railway |
+| Deployment | Vercel |
 
 ## Project Structure
 
 ```
 weatherwise/
-├── .github/workflows/       # CI/CD pipeline definitions
-├── public/                  # Static assets (CSS, client-side JS)
+├── app.js                   # Express app entry point
+├── public/                  # CSS and browser JavaScript
+├── vercel.json              # Vercel Express and EJS setup
 ├── src/
-│   ├── views/                # EJS templates (index, partials)
-│   ├── routes/                # Express route handlers
-│   ├── services/               # Weather API integration
-│   ├── models/                  # Mongoose schemas
-│   ├── config/                   # DB connection config
-│   ├── scripts/                    # Standalone test/utility scripts
-│   └── app.js                       # App entry point
-├── .env.example
-├── .gitignore
-├── package.json
-└── README.md
+│   ├── config/               # Local environment variable loading
+│   ├── middleware/           # Login/session checks
+│   ├── models/               # Mongoose user schema
+│   ├── routes/               # Express page and API routes
+│   ├── services/             # Weather and geocoding requests
+│   └── views/                # EJS page templates
+├── package.json             # Dependencies and npm commands
+└── README.md                # Project instructions
 ```
 
 ## Getting Started
@@ -127,6 +125,10 @@ This project follows a structured branching and CI/CD workflow:
 - Bugs and tasks are tracked via GitHub Issues.
 
 ## Deployment
+
+Deploy this Express app to Vercel by importing the GitHub repository and deploying the `Database` branch. Vercel detects `app.js` as the Express app. Static CSS and JavaScript files must be in the root `public/` folder; `vercel.json` also includes the EJS templates in the function bundle.
+
+Configure `MONGODB_URI` and `SESSION_SECRET` in the Vercel project settings for Production. Vercel generates a `PORT` value for the app. After deployment, check the Vercel build and function logs, then visit the assigned `vercel.app` URL.
 
 The app is deployed at: `<add live URL here>`
 

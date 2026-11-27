@@ -7,7 +7,6 @@ const pagesRouter = require("./src/routes/pages");
 const weatherRouter = require("./src/routes/weather");
 const authRouter = require("./src/routes/auth");
 const { attachUser } = require("./src/middleware/auth");
-main
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,11 +20,9 @@ app.use((req, res, next) => {
     res.locals.user = req.user;
     next();
 });
-app.use(express.static(path.join(__dirname, "src", "public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", authRouter);
-app.use(express.static(path.join(__dirname, "src", "public")));
-
 app.use("/", pagesRouter);
 app.use("/", weatherRouter);
 
